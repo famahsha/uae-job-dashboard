@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-# import chromadb
-# import requests
 import ast
 from collections import Counter
 
@@ -21,18 +19,9 @@ def load_data():
 
 df = load_data()
 
-# ── Load ChromaDB ────────────────────────────────────────
-@st.cache_resource
-def load_chromadb():
-    client = chromadb.PersistentClient(path="rag/vectorstore/chroma_db")
-    collection = client.get_collection("jobs")
-    return collection
-
-collection = load_chromadb()
-
 # ── Title ────────────────────────────────────────────────
 st.title("💼 UAE Job Market Dashboard")
-st.markdown("Analyse 61,951 real data analyst job postings")
+st.markdown("Analysing 5,000 real data analyst job postings")
 
 # ── Sidebar ──────────────────────────────────────────────
 st.sidebar.title("Navigation")
@@ -88,7 +77,7 @@ if page == "📊 Dashboard":
 
     st.divider()
 
-    # ── Two columns for charts ───────────────────────────
+    # ── Two columns ──────────────────────────────────────
     col1, col2 = st.columns(2)
 
     with col1:
@@ -137,81 +126,18 @@ if page == "📊 Dashboard":
 # ════════════════════════════════════════════════════════
 elif page == "🤖 AI Chatbot":
     st.header("🤖 AI Job Market Chatbot")
-    st.info("💡 This RAG chatbot runs locally using Ollama + ChromaDB. Clone the repository and run locally to use the chatbot feature.")
+    st.info("💡 RAG chatbot runs locally using Ollama + ChromaDB. Clone the repo and run locally to use this feature.")
+
     st.markdown("### How it works:")
     st.markdown("- **ChromaDB** stores 29,621 job embeddings locally")
     st.markdown("- **Llama3.2** runs on your machine via Ollama")
     st.markdown("- **RAG pipeline** finds relevant jobs then answers")
-    st.markdown("### To run locally:")
-    st.code("git clone https://github.com/famahsha/uae-job-dashboard.git\ncd uae-job-dashboard\npip install -r requirements.txt\nstreamlit run app.py")
 
-    # ── Chat history ─────────────────────────────────────
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-
-    # Show previous messages
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
-    # ── Chat input ───────────────────────────────────────
-    if prompt := st.chat_input("Ask about jobs, skills, salaries..."):
-
-        # Show user message
-        with st.chat_message("user"):
-            st.markdown(prompt)
-        st.session_state.messages.append({"role": "user", "content": prompt})
-
-        # Get answer from RAG
-        with st.chat_message("assistant"):
-            with st.spinner("Searching job data..."):
-
-                # Search ChromaDB
-                results = collection.query(
-                    query_texts=[prompt],
-                    n_results=5
-                )
-                context = "\n".join(results['documents'][0])
-
-                # Send to Ollama
-                rag_prompt = f"""You are a UAE job market analyst.
-Answer in exactly this format — nothing else:
-
-ANSWER: [one sentence direct answer]
-
-KEY POINTS:
-- [point 1 — maximum 10 words]
-- [point 2 — maximum 10 words]
-- [point 3 — maximum 10 words]
-
-DATA SOURCE: [which jobs/companies this came from]
-
-Job Data:
-{context}
-
-Question: {prompt}
-
-Follow the format exactly. Be specific. No paragraphs."""
-
-                response = requests.post(
-                    "http://localhost:11434/api/generate",
-                    json={
-                        "model": "llama3.2:1b",
-                        "prompt": rag_prompt,
-                        "stream": False
-                    }
-                )
-
-                answer = response.json()["response"]
-                st.markdown(answer)
-
-        st.session_state.messages.append({"role": "assistant", "content": answer})
-
-    # ── Suggested questions ──────────────────────────────
-    st.divider()
-    st.markdown("**💡 Try asking:**")
-    col1, col2 = st.columns(2)
-    col1.info("What skills are most needed for data analyst jobs?")
-    col1.info("Which companies hire the most?")
-    col2.info("What is the salary range for data analysts?")
-    col2.info("What schedule types are most common?")
+    st.markdown("### Run locally:")
+    st.code("""
+git clone https://github.com/famahsha/uae-job-dashboard.git
+cd uae-job-dashboard
+pip install -r requirements.txt
+ollama pull llama3.2:1b
+streamlit run app.py
+    """)

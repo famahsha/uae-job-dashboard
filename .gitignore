@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+rag/vectorstore/
+data/raw/
+models/
+.DS_Store

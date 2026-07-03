@@ -1,0 +1,131 @@
+┌─────────────────────────────────────────────┐
+│  3 SEPARATE THINGS                           │
+├─────────────────────────────────────────────┤
+│                                               │
+│  1. CALLING AN API                           │
+│     You → ask someone else's server          │
+│     Tools: requests, API key                 │
+│     Example: RemoteOK, OpenWeatherMap        │
+│                                               │
+│  2. WEB SCRAPING                             │
+│     You → read a webpage's HTML yourself     │
+│     Tools: BeautifulSoup, requests           │
+│     Example: Bayt.com                        │
+│                                               │
+│  3. CALLING AN AI MODEL'S API                │
+│     You → send text, get intelligent reply   │
+│     Tools: OpenAI/Anthropic API + key        │
+│     Example: asking GPT a question           │
+│                                               │
+└─────────────────────────────────────────────┘
+
+
+
+┌─────────────────────────────────────────────────┐
+│  YOUR COMPUTER (stays here, never fully uploaded) │
+│                                                    │
+│  jobs_cleaned.csv  (61,951 rows)                  │
+│         ↓                                         │
+│  converted to embeddings (numbers)                │
+│         ↓                                         │
+│  stored in local vector database                  │
+│                                                    │
+└─────────────────────────────────────────────────┘
+              ↓
+     You ask: "what skills needed?"
+              ↓
+┌─────────────────────────────────────────────────┐
+│  SEARCH locally first                             │
+│  Find only 5-10 MOST RELEVANT rows                │
+└─────────────────────────────────────────────────┘
+              ↓
+     Send ONLY those 5-10 rows + question
+              ↓
+┌─────────────────────────────────────────────────┐
+│  OPENAI's SERVER                                  │
+│  Reads just those 5-10 rows                       │
+│  Writes intelligent answer                        │
+└─────────────────────────────────────────────────┘
+              ↓
+     Answer comes back to you
+
+  -----LangChain-----------------------------------------
+  - To build RAG you need to:
+1. Read your CSV
+2. Cut it into small pieces
+3. Send pieces to OpenAI to convert to numbers
+4. Store those numbers
+5. Later — search those numbers
+6. Send results to OpenAI to get an answer
+
+LangChain = pre-written code for ALL 6 of these steps
+            so you don't write it from scratch
+
+
+Large Language Model (LLM)
+→ The AI brain that thinks and answers
+→ Examples: GPT-4, Claude, Gemini
+→ Made by: OpenAI, Anthropic, Google
+→ It UNDERSTANDS and GENERATES text
+
+LangChain
+→ Has NO brain of its own
+→ Cannot think or answer anything
+→ It is just a CONNECTOR tool
+→ Like a pipe that connects your data to the LLM brain
+
+LangChain = toolkit/connector (no brain)
+GPT-4     = the actual LLM brain (does the thinking)
+
+LangChain uses GPT-4 to do the thinking.
+LangChain itself cannot think at all.
+
+
+Normal database search:
+"Find rows containing the word Python"
+→ Only finds EXACT word matches
+
+ChromaDB search:
+"Find rows similar in MEANING to my question"
+→ Finds rows about programming languages
+→ Even if they say 'coding' not 'Python'
+→ Because similar meaning = similar numbers
+
+--------openai uses----------
+Tool 1 — Embedding Model
+Name:    text-embedding-3-small
+Job:     converts text → numbers
+Used:    twice in RAG pipeline
+         → once for your CSV chunks
+         → once for your question
+Cost:    very cheap (fraction of a cent)
+
+Tool 2 — Chat Model (LLM/GPT)
+Name:    gpt-4o
+Job:     reads text → writes intelligent answer
+Used:    once at the very end only
+Cost:    slightly more expensive
+
+
+text-embedding-3-small   →   converts your 61,951 jobs to numbers
+                             converts your question to numbers
+
+gpt-4o                   →   reads the 5 relevant jobs found
+                             writes a smart answer for you
+
+✅ LangChain          splits your data into chunks
+✅ text-embedding-3-small  converts chunks to numbers
+✅ ChromaDB           stores + searches numbers
+✅ text-embedding-3-small  converts your question to numbers
+✅ ChromaDB           finds most relevant chunks
+✅ gpt-4o             reads chunks + writes answer
+
+
+
+langchain          → text splitting, RAG chain
+langchain-openai   → GPT-4o + embedding model
+langchain-community → CSV loader + ChromaDB connector
+
+langchain          = the foundation
+langchain-openai   = your OpenAI connection
+langchain-community = your data loaders + database connectors

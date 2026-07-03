@@ -136,9 +136,14 @@ if page == "📊 Dashboard":
 # PAGE 2 — AI CHATBOT
 # ════════════════════════════════════════════════════════
 elif page == "🤖 AI Chatbot":
-
-    st.header("🤖 Ask About UAE Job Market")
-    st.markdown("Ask any question about the job data — powered by RAG + Llama3.2")
+    st.header("🤖 AI Job Market Chatbot")
+    st.info("💡 This RAG chatbot runs locally using Ollama + ChromaDB. Clone the repository and run locally to use the chatbot feature.")
+    st.markdown("### How it works:")
+    st.markdown("- **ChromaDB** stores 29,621 job embeddings locally")
+    st.markdown("- **Llama3.2** runs on your machine via Ollama")
+    st.markdown("- **RAG pipeline** finds relevant jobs then answers")
+    st.markdown("### To run locally:")
+    st.code("git clone https://github.com/famahsha/uae-job-dashboard.git\ncd uae-job-dashboard\npip install -r requirements.txt\nstreamlit run app.py")
 
     # ── Chat history ─────────────────────────────────────
     if "messages" not in st.session_state:

@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import chromadb
-import requests
+# import chromadb
+# import requests
 import ast
 from collections import Counter
 

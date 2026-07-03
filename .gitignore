@@ -4,6 +4,6 @@ __pycache__/
 .ipynb_checkpoints/
 rag/vectorstore/
 data/raw/
+data/processed/jobs_cleaned.csv
 models/
 .DS_Store
-data/

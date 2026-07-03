@@ -16,7 +16,7 @@ st.set_page_config(
 # ── Load data ────────────────────────────────────────────
 @st.cache_data
 def load_data():
-    df = pd.read_csv("data/processed/jobs_cleaned.csv")
+    df = pd.read_csv("data/processed/jobs_sample.csv")
     return df
 
 df = load_data()

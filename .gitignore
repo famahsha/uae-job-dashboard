@@ -6,3 +6,4 @@ rag/vectorstore/
 data/raw/
 models/
 .DS_Store
+data/
